@@ -201,99 +201,36 @@
 </header>
 
 <nav>
-    <a href="dashboard.html">Home</a>
-    <a href="learning.html">Learning</a>
-    <a href="upload.html">Upload</a>
-    <a href="library.html">Library</a>
-    <a href="challenges.html">Challenges</a>
-    <a href="review.html">Reviews</a>
-    <a href="profilepage.html">Profile</a>
+  <a href="/dashboard">Home</a>
+  <a href="/learning">Learning</a>
+  <a href="/upload">Upload</a>
+  <a href="/library">Library</a>
+  <a href="/challenges">Challenges</a>
+  <a href="/review">Reviews</a>
+  <a href="/profile">Profile</a>
+  <a href="/logout">Logout</a>
 </nav>
 
 <div class="library-container">
-  <!-- Card 1 -->
-  <div class="library-card">
-    <img src="/images/Photography Guide.jpg" alt="Guide">
-    <h3>Photography Guide</h3>
-    <p>Learn the fundamentals of photography with our detailed guides.</p>
-    <div class="actions">
-      <div class="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
-      </div>
-      <button class="comment-btn">Comment</button>
-    </div>
-  </div>
+  <div th:each="item : ${libraryItems}" class="library-card">
+      <img th:src="@{'/uploads/' + ${item.imagePath}}" alt="Guide">
+      <h3 th:text="${item.title}"></h3>
+      <p th:text="${item.description}"></p>
 
-  <!-- Card 2 -->
-  <div class="library-card">
-    <img src="/images/library.jpg" alt="Resources">
-    <h3>Resource Library</h3>
-    <p>Access a variety of resources to enhance your skills and creativity.</p>
-    <div class="actions">
-      <div class="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
-      </div>
-      <button class="comment-btn">Comment</button>
-    </div>
-  </div>
+      <div class="actions">
+          <div class="stars">
+              <span th:data-value="1">&#9733;</span>
+              <span th:data-value="2">&#9733;</span>
+              <span th:data-value="3">&#9733;</span>
+              <span th:data-value="4">&#9733;</span>
+              <span th:data-value="5">&#9733;</span>
+          </div>
 
-  <!-- Card 3 -->
-  <div class="library-card">
-    <img src="/images/Photography Tips.jpg" alt="Tips">
-    <h3>Photography Tips</h3>
-    <p>Discover pro tips and tricks to take your photography to the next level.</p>
-    <div class="actions">
-      <div class="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
+          <!-- Delete button -->
+          <form th:action="@{/deleteLibraryItem/{id}(id=${item.id})}" method="post" style="display:inline;">
+              <button type="submit" class="delete-btn">Delete</button>
+          </form>
       </div>
-      <button class="comment-btn">Comment</button>
-    </div>
-  </div>
-
-  <!-- Card 4 -->
-  <div class="library-card">
-    <img src="/images/challenge.png" alt="Challenges">
-    <h3>Photography Challenges</h3>
-    <p>Participate in challenges and showcase your creative skills.</p>
-    <div class="actions">
-      <div class="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
-      </div>
-      <button class="comment-btn">Comment</button>
-    </div>
-  </div>
-
-  <!-- Card 5 -->
-  <div class="library-card">
-    <img src="/images/profile.png" alt="Profile">
-    <h3>Personal Portfolio</h3>
-    <p>Build and maintain your photography portfolio with ease.</p>
-    <div class="actions">
-      <div class="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
-      </div>
-      <button class="comment-btn">Comment</button>
-    </div>
   </div>
 </div>
 

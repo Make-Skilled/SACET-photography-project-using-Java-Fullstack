@@ -2,6 +2,7 @@ package com.example.EPLS.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,11 +57,6 @@ public class EplsController {
 	@GetMapping("/learning")
 	public String learning() {
 		return "learning"; // Serves learning.html
-	}
-
-	@GetMapping("/library")
-	public String library() {
-		return "library"; // Serves library.html
 	}
 
 	@GetMapping("/login")
@@ -188,7 +185,7 @@ public class EplsController {
 			file.transferTo(new File(filePath));
 
 			// Save the metadata to the database
-			Images image = new Images(filePath, title, description, uploadedBy);
+			Images image = new Images(file.getOriginalFilename(), title, description, uploadedBy);
 			imagesRepository.save(image); // Save image metadata to the database
 
 			// Add success message to the model
@@ -200,5 +197,47 @@ public class EplsController {
 			return "upload"; // Return to the upload page with error message
 		}
 	}
+	
+	@GetMapping("/library")
+	public String gallery(HttpSession session, Model model) {
+	    // Retrieve the user email from the session
+	    String user = (String) session.getAttribute("userEmail");
+	    System.out.print("user");
+
+	    // Check if user is not logged in
+	    if (user == null) {
+	        return "redirect:/login"; // Redirect to login page if not logged in
+	    }
+
+	    // Fetch the images uploaded by the logged-in user from the repository
+	    List<Images> gallery = imagesRepository.findByUploadedBy(user);
+
+	    // Add the gallery images to the model
+	    model.addAttribute("libraryItems", gallery);
+
+	    // Return the gallery page view
+	    return "library"; // This assumes you have a Thymeleaf template named gallery.html
+	}
+	
+	 @PostMapping("/deleteLibraryItem/{id}")
+	    public String deleteLibraryItem(@PathVariable("id") Long id) {
+	        try {
+	            // Check if the item exists
+	            if (imagesRepository.existsById(id)) {
+	                // Delete the item from the database using the repository
+	                imagesRepository.deleteById(id);
+	            } else {
+	                // If the item does not exist, handle accordingly (optional, you can redirect or show an error)
+	                return "redirect:/gallery?error=ItemNotFound";
+	            }
+
+	            // Redirect to the library page after deletion
+	            return "redirect:/gallery";
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            // Redirect to the library page with an error message if something goes wrong
+	            return "redirect:/gallery?error=true";
+	        }
+	    }
 
 }
