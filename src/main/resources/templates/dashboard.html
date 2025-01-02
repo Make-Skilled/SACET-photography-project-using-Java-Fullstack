@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #81a4a8 50%, #356d73 50%); /* Light and Dark Teal Gradient */
+      color: #333;
+    }
+
+    header {
+      background: #356d73; /* Dark teal */
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    nav {
+      background: #81a4a8; /* Light teal */
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #f8f8f8;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+      background: #f7f7f7;
+      color: #555;
+    }
+
+    .dashboard-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      margin: 40px auto;
+      padding: 20px;
+      max-width: 1200px;
+    }
+
+    .dashboard-card {
+      width: 300px;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .dashboard-card img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+    }
+
+    .dashboard-card h3 {
+      font-size: 1.5rem;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-card p {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .dashboard-card button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background: #356d73; /* Dark teal */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dashboard-card button:hover {
+      background: #81a4a8; /* Light teal */
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #356d73; /* Dark teal */
+      color: white;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Photography Dashboard</h1>
+</header>
+
+<nav>
+    <a href="learning.html">Learning</a>
+    <a href="upload.html">Upload</a>
+    <a href="library.html">Library</a>
+    <a href="challenges.html">Challenges</a>
+    <a href="review.html">Reviews</a>
+    <a href="profilepage.html">Profile</a>
+</nav>
+
+<div class="dashboard-container">
+  <!-- Card 1: Learning -->
+  <div class="dashboard-card">
+    <img src="/images/learn.jpg" alt="Learning">
+    <h3>Learning</h3>
+    <p>Access tutorials and courses to sharpen your photography skills.</p>
+    <button>Learning</button>
+  </div>
+
+  <!-- Card 2: Upload -->
+  <div class="dashboard-card">
+    <img src="/images/UPLOAD.jpg" alt="Upload">
+    <h3>Upload</h3>
+    <p>Share your photos with the community and build your portfolio.</p>
+    <button>Upload</button>
+  </div>
+
+  <!-- Card 3: Library -->
+  <div class="dashboard-card">
+    <img src="/images/library.jpg" alt="Library">
+    <h3>Library</h3>
+    <p>Browse through resources and tools to enhance your creativity.</p>
+    <button>Library</button>
+  </div>
+
+  <!-- Card 4: Challenges -->
+  <div class="dashboard-card">
+    <img src="/images/challenge.png" alt="Challenges">
+    <h3>Challenges</h3>
+    <p>Participate in exciting challenges and showcase your skills.</p>
+    <button>Challenges</button>
+  </div>
+
+  <!-- Card 5: Reviews -->
+  <div class="dashboard-card">
+    <img src="/images/REVIEW.jpg" alt="Reviews">
+    <h3>Reviews</h3>
+    <p>Get feedback on your work from experts and peers.</p>
+    <button>Reviews</button>
+  </div>
+
+  <!-- Card 6: Profile -->
+  <div class="dashboard-card">
+    <img src="/images/profile.png" alt="Profile">
+    <h3>Profile</h3>
+    <p>Update your profile and track your learning progress.</p>
+    <button>Profile</button>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

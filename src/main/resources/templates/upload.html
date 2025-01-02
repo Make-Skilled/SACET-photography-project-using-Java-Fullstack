@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #356d73 50%, #81a4a8 50%); /* Muted Teal and Greyish Blue Gradient */
+      color: #333;
+    }
+
+    header {
+      background: #356d73; /* Muted Teal */
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    nav {
+      background: #81a4a8; /* Soft Greyish Blue */
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #f5f2f2;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+      background: #f7f7f7;
+      color: #555;
+    }
+
+    .upload-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      margin: 40px auto;
+      max-width: 800px;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+    }
+
+    .upload-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #356d73; /* Muted Teal */
+    }
+
+    .upload-container p {
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .upload-container input[type="text"],
+    .upload-container input[type="file"],
+    .upload-container textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .upload-container textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    .upload-container button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background: #356d73; /* Muted Teal Button */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .upload-container button:hover {
+      background: #2f5b56; /* Darker Teal */
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #356d73; /* Muted Teal */
+      color: white;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Upload Your Photos</h1>
+</header>
+
+<nav>
+  <a href="dashboard.html">Home</a>
+  <a href="learning.html">Learning</a>
+  <a href="upload.html">Upload</a>
+  <a href="library.html">Library</a>
+  <a href="challenges.html">Challenges</a>
+  <a href="review.html">Reviews</a>
+  <a href="profilepage.html">Profile</a>
+</nav>
+
+<div class="upload-container">
+  <h2>Share Your Creativity</h2>
+  <p>
+    Upload your amazing photographs to showcase your talent to the world. Build your portfolio and gain valuable feedback from the community.
+  </p>
+  
+  <!-- Title Field -->
+  <input type="text" placeholder="Enter a title for your photo" />
+  
+  <!-- File Upload Field -->
+  <input type="file" accept="image/*">
+  
+  <!-- Caption/Description Field -->
+  <textarea placeholder="Add a caption or description for your photo..."></textarea>
+  
+  <!-- Upload Button -->
+  <button>Upload Photo</button>
+</div>
+
+<footer>
+  <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

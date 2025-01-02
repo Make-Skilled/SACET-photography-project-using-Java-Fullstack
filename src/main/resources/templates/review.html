@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #356d73 50%, #81a4a8 50%); /* Muted teal and soft greyish-blue gradient */
+      color: #333;
+    }
+
+    header {
+      background: #356d73; /* Muted Teal */
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    nav {
+      background: #81a4a8; /* Soft greyish-blue */
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fcf7f7;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+      background: #f7f7f7;
+      color: #555;
+    }
+
+    .reviews-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      margin: 40px auto;
+      max-width: 800px;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+    }
+
+    .reviews-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .review-card {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f9f9f9;
+      border-left: 5px solid #356d73; /* Muted Teal */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .review-card p {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .review-card .user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .user-info span {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .review-form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .review-form textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      height: 150px;
+      font-size: 1rem;
+      resize: none;
+      margin-bottom: 20px;
+    }
+
+    .star-rating {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .star-rating input {
+      display: none;
+    }
+
+    .star-rating label {
+      font-size: 2rem;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .star-rating input:checked ~ label {
+      color: #356d73; /* Muted Teal for filled stars */
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+      color: #356d73; /* Hover effect with muted teal */
+    }
+
+    .review-form button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background: #356d73; /* Muted Teal */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .review-form button:hover {
+      background: #2c5d60; /* Slightly darker muted teal */
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #356d73; /* Muted Teal */
+      color: white;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Reviews</h1>
+</header>
+
+<nav>
+  <a href="dashboard.html">Home</a>
+  <a href="learning.html">Learning</a>
+  <a href="upload.html">Upload</a>
+  <a href="library.html">Library</a>
+  <a href="challenges.html">Challenges</a>
+  <a href="review.html">Reviews</a>
+  <a href="profilepage.html">Profile</a>
+</nav>
+
+<div class="reviews-container">
+  <h2>User Reviews</h2>
+
+  <!-- Review 1 -->
+  <div class="review-card">
+    <p>"I love the Black & White Challenge! It really pushed me to think differently about composition and lighting. Highly recommend this challenge to anyone looking to improve their skills."</p>
+    <div class="user-info">
+      <span>John Doe</span>
+      <span>5 stars</span>
+    </div>
+  </div>
+
+  <!-- Review 2 -->
+  <div class="review-card">
+    <p>"Nature Photography was so much fun! I got to explore new places and capture the beauty of nature. It was a rewarding experience and I learned a lot along the way."</p>
+    <div class="user-info">
+      <span>Jane Smith</span>
+      <span>4.5 stars</span>
+    </div>
+  </div>
+
+  <!-- Review 3 -->
+  <div class="review-card">
+    <p>"The Portrait Challenge helped me discover new ways to capture emotions and tell stories through photography. It's an eye-opening experience for anyone interested in portraiture."</p>
+    <div class="user-info">
+      <span>Mark Lee</span>
+      <span>5 stars</span>
+    </div>
+  </div>
+
+  <!-- Add a review -->
+  <div class="review-form">
+    <h3>Share Your Review</h3>
+    
+    <!-- Rating Section -->
+    <div class="star-rating">
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+    </div>
+
+    <!-- Review Text Area -->
+    <textarea placeholder="Write your review here..."></textarea>
+
+    <button>Submit Review</button>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
