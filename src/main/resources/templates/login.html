@@ -74,12 +74,13 @@
 <body>
   <div class="form-container">
     <h2>Login</h2>
-    <form>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Password" required>
+	<p th:if="${success}" th:text="${success}" style="color: green;"></p>
+    <form action="/login" method="post">
+      <input type="email" placeholder="Email" name="email" required>
+      <input type="password" placeholder="Password" name="password" required>
       <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    <p>Don't have an account? <a href="/signup">Sign up</a></p>
   </div>
 </body>
 </html>
