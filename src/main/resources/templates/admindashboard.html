@@ -196,6 +196,19 @@
     .reject-btn:hover {
       background: #d53e4d; /* Darker Red */
     }
+    .alert {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+  }
+  .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+  }
+  .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+  }
   </style>
 </head>
 <body>
@@ -253,27 +266,41 @@
     <!-- User Management Section -->
     <section id="users">
       <h2>Manage Users</h2>
+      <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Display error message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
       <table>
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>001</td>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td>Student</td>
-            <td><button class="reject-btn">Delete</button></td>
-          </tr>
-        </tbody>
+          <thead>
+              <tr>
+                  <th>User ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Iterate through usersList -->
+              <tr th:each="user : ${usersList}">
+                  <td th:text="${user.id}">001</td> <!-- Display User ID -->
+                  <td th:text="${user.fullname}">John Doe</td> <!-- Display User Fullname -->
+                  <td th:text="${user.email}">john@example.com</td> <!-- Display User Email -->
+                  <td >Student</td> <!-- Display User Role -->
+                  <td>
+                      <!-- Button for deleting the user -->
+                      <form th:action="@{/deleteUser/{id}(id=${user.id})}" method="post">
+                          <button type="submit" class="reject-btn">Delete</button>
+                      </form>
+                  </td>
+              </tr>
+          </tbody>
       </table>
-    </section>
+  </section>
   </div>
 </div>
 

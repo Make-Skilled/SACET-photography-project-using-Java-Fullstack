@@ -78,8 +78,8 @@
     }
 
     .challenge-card img {
-      width: 100px;
-      height: 100px;
+      width: 80%;
+      height: 120px;
       margin-bottom: 15px;
     }
 
@@ -147,55 +147,19 @@
 </nav>
 
 <div class="challenges-container">
-  <!-- Challenge 1 -->
-  <div class="challenge-card">
-    <img src="/images/Black & White Challenge.jpg" alt="Challenge 1">
-    <h3>Black & White Challenge</h3>
-    <p>Showcase your skills in capturing stunning black and white photographs.</p>
-    <div class="actions">
-      <button>Participate</button>
-    </div>
-  </div>
+    <div th:each="challenge : ${challenges}">
+        <div class="challenge-card">
+            <!-- Dynamic image path -->
+            <img th:src="@{uploads/{imagePath}(imagePath=${challenge.imagePath})}" alt="Challenge Image">
+            
+            <h3 th:text="${challenge.challengeTitle}">Challenge Title</h3>
+            <p th:text="${challenge.description}">Challenge Description</p>
 
-  <!-- Challenge 2 -->
-  <div class="challenge-card">
-    <img src="/images/Nature Photography.jpg" alt="Challenge 2">
-    <h3>Nature Photography</h3>
-    <p>Capture the beauty of nature through your lens and share your perspective.</p>
-    <div class="actions">
-      <button>Participate</button>
+            <div class="actions">
+                <button>Participate</button>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- Challenge 3 -->
-  <div class="challenge-card">
-    <img src="/images/Portrait Challenge.jpg" alt="Challenge 3">
-    <h3>Portrait Challenge</h3>
-    <p>Highlight human emotions and stories through powerful portrait photography.</p>
-    <div class="actions">
-      <button>Participate</button>
-    </div>
-  </div>
-
-  <!-- Challenge 4 -->
-  <div class="challenge-card">
-    <img src="/images/Abstract Photography.jpg" alt="Challenge 4">
-    <h3>Abstract Photography</h3>
-    <p>Experiment with abstract photography and push the boundaries of creativity.</p>
-    <div class="actions">
-      <button>Participate</button>
-    </div>
-  </div>
-
-  <!-- Challenge 5 -->
-  <div class="challenge-card">
-    <img src="/images/Food Photography.jpg" alt="Challenge 5">
-    <h3>Food Photography</h3>
-    <p>Showcase your culinary shots with mouth-watering food photography.</p>
-    <div class="actions">
-      <button>Participate</button>
-    </div>
-  </div>
 </div>
 
 <footer>

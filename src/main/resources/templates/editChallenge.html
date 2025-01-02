@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Challenge</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #81a4a8 50%, #356d73 50%); /* Light and Dark Teal Gradient */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    .form-container h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #356d73; /* Dark teal */
+    }
+
+    .form-container input, .form-container textarea {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .form-container textarea {
+      resize: vertical;
+      height: 120px;
+    }
+
+    .form-container button {
+      background: #356d73; /* Dark teal */
+      color: white;
+      font-size: 1rem;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .form-container button:hover {
+      background: #81a4a8; /* Light teal */
+    }
+
+    .form-container p {
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .form-container a {
+      color: #356d73; /* Dark teal */
+      text-decoration: none;
+    }
+
+    .form-container a:hover {
+      text-decoration: underline;
+    }
+    
+    .form-container input[type="file"] {
+      background: #fff;
+      color: #356d73;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Edit Challenge</h2>
+
+    <!-- Display Success and Error Messages -->
+    <center><p th:text="${success}"></p></center>
+    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+    <!-- Edit Challenge Form -->
+    <form action="/editChallenge/{id}" method="post" enctype="multipart/form-data">
+      <!-- Hidden Field for Challenge ID -->
+      <input type="hidden" name="id" th:value="${challenge.id}" />
+
+      <!-- Challenge Title -->
+      <input type="text" placeholder="Challenge Title" name="title" th:value="${challenge.challengeTitle}" required>
+
+      <!-- Challenge Description -->
+      <textarea placeholder="Challenge Description" name="description" th:value="${challenge.description}" required></textarea>
+
+      <!-- Image Upload (If a file is uploaded, show the default image) -->
+      <input type="file" name="file" accept="image/*">
+      <div th:if="${challenge.imagePath}">
+        <p>Current Image: <img th:src="@{uploads/{imagePath}(imagePath=${challenge.imagePath})}" alt="Current Challenge Image" width="100" /></p>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit">Update Challenge</button>
+    </form>
+
+    <!-- Link to View Challenges -->
+    <p>Want to view challenges? <a href="/challenges">View Challenges</a></p>
+  </div>
+</body>
+</html>
