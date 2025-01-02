@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.EPLS.model.Users;
 import com.example.EPLS.repository.UserRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class EplsController {
 
@@ -52,11 +54,6 @@ public class EplsController {
 		return "login"; // Serves login.html
 	}
 
-	@GetMapping("/profilepage")
-	public String profilePage() {
-		return "profilepage"; // Serves profilepage.html
-	}
-
 	@GetMapping("/review")
 	public String review() {
 		return "review"; // Serves review.html
@@ -94,21 +91,56 @@ public class EplsController {
 	}
 	
 	@PostMapping("/login")
-    public String loginUser(@RequestParam("email") String email,
-                            @RequestParam("password") String password,
-                            Model model) {
-        // Find user by email
-        Users user = userRepository.findByEmail(email);
+	public String loginUser(@RequestParam("email") String email,
+	                        @RequestParam("password") String password,
+	                        HttpSession session,
+	                        Model model) {
+	    // Check if it's the admin user
+	    if ("admin123@gmail.com".equals(email) && "admin123".equals(password)) {
+	        return "admindashboard"; // Redirect to admin dashboard
+	    }
 
-        if (user == null || !user.getPassword().equals(password)) {
-            // Authentication failed
-            model.addAttribute("error", "Invalid email or password.");
-            return "login"; // Redirect back to login page with error message
-        }
+	    // Find user by email
+	    Users user = userRepository.findByEmail(email);
 
-        // Authentication succeeded
-        model.addAttribute("user", user); // Add user object to model for personalization
-        return "dashboard"; // Redirect to the dashboard (or any success page)
-    }
+	    if (user == null || !user.getPassword().equals(password)) {
+	        // Authentication failed
+	        model.addAttribute("error", "Invalid email or password.");
+	        return "login"; // Redirect back to login page with error message
+	    }
+
+	    // Authentication succeeded
+	    session.setAttribute("userEmail", user.getEmail());
+	    model.addAttribute("user", user); // Add user object to model for personalization
+	    return "dashboard"; // Redirect to the user dashboard
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+	    session.invalidate(); // Invalidate the session
+	    return "redirect:/"; // Redirect to login page
+	}
+
+	@GetMapping("/profile")
+	public String getProfile(HttpSession session, Model model) {
+	    // Retrieve the email from the session
+	    String email = (String) session.getAttribute("userEmail");
+	    System.out.print("userEmail");
+
+	    if (email == null) {
+	        // If no email is found in the session, redirect to the login page
+	        return "redirect:/login";
+	    }
+
+	    // Fetch the user details from the database
+	    Users user = userRepository.findByEmail(email);
+	    System.out.println(user.getFullname());
+
+	    // Add user details to the model to display in the Thymeleaf template
+	    model.addAttribute("name", user.getFullname());
+	    model.addAttribute("email",user.getEmail());
+	    return "profilepage"; // Render the profile page
+	}
+
 
 }

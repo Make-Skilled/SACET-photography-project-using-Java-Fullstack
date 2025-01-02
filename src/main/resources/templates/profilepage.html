@@ -189,12 +189,20 @@
 
   <!-- Profile Card -->
   <div class="profile-card">
-    <img src="/images/profile.png" alt="Profile Picture"> <!-- Replace with actual image -->
-    <div class="user-info">
-      <h3>John Doe</h3>
-      <p>Email: john.doe@example.com</p>
-    </div>
-    <button class="edit-profile-btn" onclick="editProfile()">Edit Profile</button>
+      <!-- Display the profile picture dynamically -->
+      <img src="/images/profile.png" 
+           alt="Profile Picture">
+
+      <div class="user-info">
+          <!-- Display the user's full name -->
+          <h3 th:text="${name}">John Doe</h3>
+
+          <!-- Display the user's email -->
+          <p>Email: <span th:text="${email}">john.doe@example.com</span></p>
+      </div>
+
+      <!-- Edit Profile button -->
+      <button class="edit-profile-btn" onclick="editProfile()">Edit Profile</button>
   </div>
 
   <!-- Profile Form (for editing) -->
