@@ -93,6 +93,7 @@
     .upload-container textarea {
       resize: none;
       height: 100px;
+      margin-left:150px;
     }
 
     .upload-container button {
@@ -105,6 +106,7 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background 0.3s ease;
+      margin-left:0px;
     }
 
     .upload-container button:hover {
@@ -144,18 +146,23 @@
   <p>
     Upload your amazing photographs to showcase your talent to the world. Build your portfolio and gain valuable feedback from the community.
   </p>
-  
+  <center>
   <!-- Title Field -->
-  <input type="text" placeholder="Enter a title for your photo" />
-  
-  <!-- File Upload Field -->
-  <input type="file" accept="image/*">
-  
-  <!-- Caption/Description Field -->
-  <textarea placeholder="Add a caption or description for your photo..."></textarea>
-  
-  <!-- Upload Button -->
-  <button>Upload Photo</button>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+      <!-- Title Field -->
+      <input type="text" name="title" placeholder="Enter a title for your photo" required />
+
+      <!-- File Upload Field -->
+      <input type="file" name="file" accept="image/*" required />
+
+      <!-- Caption/Description Field -->
+      <textarea name="description" placeholder="Add a caption or description for your photo..." required></textarea>
+
+      <!-- Upload Button -->
+      <button type="submit">Upload Photo</button>
+	 
+  </form>
+  </center>
 </div>
 
 <footer>
