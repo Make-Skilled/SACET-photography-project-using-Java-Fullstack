@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.EPLS.model.ChallengeRequests;
 import com.example.EPLS.model.Challenges;
 import com.example.EPLS.model.Images;
 import com.example.EPLS.model.Users;
+import com.example.EPLS.repository.ChallengeRequestsRepository;
 import com.example.EPLS.repository.ChallengesRepository;
 import com.example.EPLS.repository.ImagesRepository;
 import com.example.EPLS.repository.UserRepository;
@@ -45,6 +47,12 @@ public class EplsController {
 	@Autowired
 	private ChallengeService challengeService;
 
+	@Autowired
+	private HttpSession session;
+
+	@Autowired
+	private ChallengeRequestsRepository challengeRequestRepository;
+
 	@GetMapping("/")
 	public String index() {
 		return "index"; // Serves index.html
@@ -58,7 +66,6 @@ public class EplsController {
 		model.addAttribute("usersList", allUsers);
 		return "admindashboard"; // Serves admindashboard.html
 	}
-
 
 	@GetMapping("/dashboard")
 	public String dashboard() {
@@ -135,6 +142,7 @@ public class EplsController {
 
 		// Authentication succeeded
 		session.setAttribute("userEmail", user.getEmail());
+		session.setAttribute("fullname", user.getFullname());
 		model.addAttribute("user", user); // Add user object to model for personalization
 		return "redirect:/dashboard"; // Redirect to the user dashboard
 	}
@@ -332,8 +340,22 @@ public class EplsController {
 	public String getAllChallenges(Model model) {
 		List<Challenges> challenges = challengeRepository.findAll();
 		model.addAttribute("challenges", challenges);
-		return "challenges"; // This refers to a view named 'challenges.html' (or .jsp depending on your view
-								// resolver)
+
+		// Fetch the status from the session
+		String status = (String) session.getAttribute("regStatus");
+
+		// Check the status and add appropriate message
+		if ("yes".equals(status)) {
+			model.addAttribute("message", "You have already requested to participate in this challenge.");
+			session.removeAttribute("regStatus"); // Optional: Clear the status to prevent repeated messages
+		} else if ("success".equals(status)) {
+			model.addAttribute("message", "Participation request submitted successfully.");
+			session.removeAttribute("regStatus"); // Optional: Clear the status to prevent repeated messages
+		} else {
+			model.addAttribute("message", ""); // Default empty message
+		}
+
+		return "challenges"; // This refers to the view named 'challenges.html'
 	}
 
 	@GetMapping("/adminChallenges")
@@ -403,13 +425,12 @@ public class EplsController {
 
 			// Save updated challenge
 			challengeRepository.save(existingChallenge);
-			
+
 			Challenges ch = challengeRepository.findById(challengeId)
 					.orElseThrow(() -> new RuntimeException("Challenge not found"));
 
-
 			model.addAttribute("success", "Challenge updated successfully.");
-			model.addAttribute("challenge",ch);
+			model.addAttribute("challenge", ch);
 			return "editChallenge";
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -423,21 +444,63 @@ public class EplsController {
 
 	@PostMapping("/deleteChallenge/{id}")
 	public String deleteChallenge(@PathVariable("id") Long challengeId, Model model) {
-	    try {
-	        // Check if the challenge exists
-	        Challenges challenge = challengeRepository.findById(challengeId)
-	                .orElseThrow(() -> new RuntimeException("Challenge not found"));
+		try {
+			// Check if the challenge exists
+			Challenges challenge = challengeRepository.findById(challengeId)
+					.orElseThrow(() -> new RuntimeException("Challenge not found"));
 
-	        // Delete the challenge
-	        challengeRepository.delete(challenge);
+			// Delete the challenge
+			challengeRepository.delete(challenge);
 
-	        // Redirect with a success message
-	        model.addAttribute("success", "Challenge deleted successfully.");
-	        return "redirect:/adminChallenges"; // Redirect to the challenges list page
-	    } catch (RuntimeException e) {
-	        model.addAttribute("error", e.getMessage());
-	        return "redirect:/adminChallenges"; // Redirect back to the challenges list page with an error
-	    }
+			// Redirect with a success message
+			model.addAttribute("success", "Challenge deleted successfully.");
+			return "redirect:/adminChallenges"; // Redirect to the challenges list page
+		} catch (RuntimeException e) {
+			model.addAttribute("error", e.getMessage());
+			return "redirect:/adminChallenges"; // Redirect back to the challenges list page with an error
+		}
+	}
+
+	@GetMapping("/participateRequest/{id}")
+	public String participateInChallenge(@PathVariable("id") Long challengeId, Model model) {
+		try {
+			// Fetch user details from session
+			String userEmail = (String) session.getAttribute("userEmail");
+			if (userEmail == null) {
+
+				return "login";
+			}
+
+			// Check if user already requested participation in this challenge
+			Optional<ChallengeRequests> existingRequest = challengeRequestRepository
+					.findByChallengeIdAndUserEmail(challengeId, userEmail);
+			if (existingRequest.isPresent()) {
+				session.setAttribute("regStatus", "yes");
+				return "redirect:/allChallenges";
+			}
+
+			// Create a new ChallengeRequests object
+			ChallengeRequests newRequest = new ChallengeRequests();
+			newRequest.setChallengeId(challengeId);
+
+			// Fetch additional user details if stored in session
+			String userRequested = (String) session.getAttribute("fullname"); // Assume "userName" is stored in session
+			newRequest.setUserRequested(userRequested != null ? userRequested : "Anonymous");
+
+			newRequest.setUserEmail(userEmail);
+			newRequest.setCount(0); // Default count is 0
+			newRequest.setStatus("pending"); // Default status is "pending"
+
+			// Save the new request to the database
+			challengeRequestRepository.save(newRequest);
+
+			session.setAttribute("regStatus", "success");
+			return "redirect:/allChallenges";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("message", "An error occured while sending the request");
+			return "redirect:/allchallenges";
+		}
 	}
 
 }
