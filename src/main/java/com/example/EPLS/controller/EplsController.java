@@ -59,10 +59,6 @@ public class EplsController {
 		return "admindashboard"; // Serves admindashboard.html
 	}
 
-	@GetMapping("/challenges")
-	public String challenges() {
-		return "challenges"; // Serves challenges.html
-	}
 
 	@GetMapping("/dashboard")
 	public String dashboard() {
