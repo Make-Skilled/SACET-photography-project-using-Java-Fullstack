@@ -92,28 +92,27 @@
     <p th:if="${error}" th:text="${error}" style="color: red;"></p>
 
     <!-- Edit Challenge Form -->
-    <form action="/editChallenge/{id}" method="post" enctype="multipart/form-data">
-      <!-- Hidden Field for Challenge ID -->
-      <input type="hidden" name="id" th:value="${challenge.id}" />
+	<form action="/editChallenge" method="post" enctype="multipart/form-data">
+	    <!-- Hidden Field for Challenge ID -->
+	    <input type="hidden" name="id" th:value="${challenge.id}" />
 
-      <!-- Challenge Title -->
-      <input type="text" placeholder="Challenge Title" name="title" th:value="${challenge.challengeTitle}" required>
+	    <!-- Challenge Title -->
+	    <input type="text" placeholder="Challenge Title" name="title" th:value="${challenge.challengeTitle}" required>
 
-      <!-- Challenge Description -->
-      <textarea placeholder="Challenge Description" name="description" th:value="${challenge.description}" required></textarea>
+	    <!-- Challenge Description -->
+	    <textarea placeholder="Challenge Description" name="description" required>
+	        [[${challenge.description}]]
+	    </textarea>
 
-      <!-- Image Upload (If a file is uploaded, show the default image) -->
-      <input type="file" name="file" accept="image/*">
-      <div th:if="${challenge.imagePath}">
-        <p>Current Image: <img th:src="@{uploads/{imagePath}(imagePath=${challenge.imagePath})}" alt="Current Challenge Image" width="100" /></p>
-      </div>
+	    <!-- Image Upload -->
+	    <input type="file" name="file" accept="image/*">
 
-      <!-- Submit Button -->
-      <button type="submit">Update Challenge</button>
-    </form>
+	    <!-- Submit Button -->
+	    <button type="submit">Update Challenge</button>
+	</form>
 
     <!-- Link to View Challenges -->
-    <p>Want to view challenges? <a href="/challenges">View Challenges</a></p>
+    <p>Want to view challenges? <a href="/adminChallenges">View Challenges</a></p>
   </div>
 </body>
 </html>

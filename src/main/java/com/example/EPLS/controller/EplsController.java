@@ -23,6 +23,7 @@ import com.example.EPLS.model.Users;
 import com.example.EPLS.repository.ChallengesRepository;
 import com.example.EPLS.repository.ImagesRepository;
 import com.example.EPLS.repository.UserRepository;
+import com.example.EPLS.service.ChallengeService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,13 +35,16 @@ public class EplsController {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private ImagesRepository imagesRepository;
-	
+
 	@Autowired
 	ChallengesRepository challengeRepository;
-	
+
+	@Autowired
+	private ChallengeService challengeService;
+
 	@GetMapping("/")
 	public String index() {
 		return "index"; // Serves index.html
@@ -50,8 +54,8 @@ public class EplsController {
 	public String adminDashboard(Model model) {
 		List<Users> allUsers = userRepository.findAll();
 
-        // Add user details and the list of all users to the model
-        model.addAttribute("usersList", allUsers);
+		// Add user details and the list of all users to the model
+		model.addAttribute("usersList", allUsers);
 		return "admindashboard"; // Serves admindashboard.html
 	}
 
@@ -89,7 +93,7 @@ public class EplsController {
 	public String upload() {
 		return "upload"; // Serves upload.html
 	}
-	
+
 	@GetMapping("/createChallenge")
 	public String createChallenge() {
 		return "createChallenge";
@@ -213,126 +217,231 @@ public class EplsController {
 			return "upload"; // Return to the upload page with error message
 		}
 	}
-	
+
 	@GetMapping("/library")
 	public String gallery(HttpSession session, Model model) {
-	    // Retrieve the user email from the session
-	    String user = (String) session.getAttribute("userEmail");
-	    System.out.print("user");
+		// Retrieve the user email from the session
+		String user = (String) session.getAttribute("userEmail");
+		System.out.print("user");
 
-	    // Check if user is not logged in
-	    if (user == null) {
-	        return "redirect:/login"; // Redirect to login page if not logged in
-	    }
+		// Check if user is not logged in
+		if (user == null) {
+			return "redirect:/login"; // Redirect to login page if not logged in
+		}
 
-	    // Fetch the images uploaded by the logged-in user from the repository
-	    List<Images> gallery = imagesRepository.findByUploadedBy(user);
+		// Fetch the images uploaded by the logged-in user from the repository
+		List<Images> gallery = imagesRepository.findByUploadedBy(user);
 
-	    // Add the gallery images to the model
-	    model.addAttribute("libraryItems", gallery);
+		// Add the gallery images to the model
+		model.addAttribute("libraryItems", gallery);
 
-	    // Return the gallery page view
-	    return "library"; // This assumes you have a Thymeleaf template named gallery.html
+		// Return the gallery page view
+		return "library"; // This assumes you have a Thymeleaf template named gallery.html
 	}
-	
+
 	@PostMapping("/deleteLibraryItem/{id}")
 	public String deleteLibraryItem(@PathVariable("id") Long id) {
-	        try {
-	            // Check if the item exists
-	            if (imagesRepository.existsById(id)) {
-	                // Delete the item from the database using the repository
-	                imagesRepository.deleteById(id);
-	            } else {
-	                // If the item does not exist, handle accordingly (optional, you can redirect or show an error)
-	                return "redirect:/library?error=ItemNotFound";
-	            }
+		try {
+			// Check if the item exists
+			if (imagesRepository.existsById(id)) {
+				// Delete the item from the database using the repository
+				imagesRepository.deleteById(id);
+			} else {
+				// If the item does not exist, handle accordingly (optional, you can redirect or
+				// show an error)
+				return "redirect:/library?error=ItemNotFound";
+			}
 
-	            // Redirect to the library page after deletion
-	            return "redirect:/library";
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            // Redirect to the library page with an error message if something goes wrong
-	            return "redirect:/library?error=true";
-	        }
+			// Redirect to the library page after deletion
+			return "redirect:/library";
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Redirect to the library page with an error message if something goes wrong
+			return "redirect:/library?error=true";
+		}
+	}
+
+	@PostMapping("/deleteUser/{id}")
+	public String deleteUser(@PathVariable("id") Long id, Model model) {
+		try {
+			// Check if the user exists
+			Optional<Users> userOpt = userRepository.findById(id);
+
+			if (!userOpt.isPresent()) {
+				// User not found, return an error message (or redirect with an error)
+				model.addAttribute("error", "User not found!");
+				return "redirect:/admindashboard"; // Redirect back to the dashboard
+			}
+
+			// Delete the user
+			userRepository.deleteById(id);
+
+			// Redirect to the dashboard after successful deletion
+			model.addAttribute("success", "User deleted successfully.");
+			return "redirect:/admindashboard";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("error", "An error occurred while deleting the user.");
+			return "redirect:/admindashboard"; // Redirect back to the dashboard in case of an error
+		}
+	}
+
+	@PostMapping("/createChallenge")
+	public String createChallenge(@RequestParam("file") MultipartFile file, @RequestParam("title") String title,
+			@RequestParam("description") String description, Model model) {
+
+		// Check if the file is empty
+		if (file.isEmpty()) {
+			model.addAttribute("error", "Please select an image to upload for the challenge.");
+			return "create_challenge"; // Return to the challenge creation page with an error
+		}
+
+		// Log the title and description for debugging
+		System.out.println("Challenge Title: " + title);
+		System.out.println("Challenge Description: " + description);
+
+		try {
+			// Resolve the upload directory from application.properties
+			File uploadDirectory = new File(uploadDir);
+			if (!uploadDirectory.exists()) {
+				uploadDirectory.mkdirs(); // Create the directory if it doesn't exist
+			}
+
+			// Generate a unique filename using UUID to avoid conflicts
+			String originalFilename = file.getOriginalFilename();
+			String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+
+			// Save the file to the directory with the unique filename
+			String filePath = uploadDirectory.getAbsolutePath() + "/" + uniqueFilename;
+			file.transferTo(new File(filePath));
+
+			// Save the challenge metadata to the database
+			Challenges challenge = new Challenges(title, description, uniqueFilename);
+
+			// Save challenge data into the repository
+			challengeRepository.save(challenge); // Save challenge to the database
+
+			// Add success message to the model
+			model.addAttribute("success", "Challenge created successfully.");
+			return "createChallenge"; // Return to the challenge creation page with a success message
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("error", "An error occurred while creating the challenge.");
+			return "createChallenge"; // Return to the challenge creation page with an error message
+		}
+	}
+
+	@GetMapping("/allChallenges")
+	public String getAllChallenges(Model model) {
+		List<Challenges> challenges = challengeRepository.findAll();
+		model.addAttribute("challenges", challenges);
+		return "challenges"; // This refers to a view named 'challenges.html' (or .jsp depending on your view
+								// resolver)
+	}
+
+	@GetMapping("/adminChallenges")
+	public String getAllChallenge(Model model) {
+		List<Challenges> challenges = challengeService.getAllChallenges(); // Service method to fetch challenges
+		model.addAttribute("challenges", challenges);
+		return "adminChallenges"; // Returns the adminChallenges.html view
+	}
+
+	@GetMapping("/editChallenge/{id}")
+	public String editChallengeForm(@PathVariable("id") Long challengeId, Model model) {
+		Challenges challenge = challengeService.getChallengeById(challengeId);
+		model.addAttribute("challenge", challenge);
+		return "editChallenge"; // The name of the HTML template to render the edit form
+	}
+
+	@PostMapping("/editChallenge")
+	public String updateChallenge(@RequestParam("id") Long challengeId,
+			@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("title") String title,
+			@RequestParam("description") String description, Model model) {
+		try {
+			// Debugging step to verify inputs
+			System.out.println("Title: " + title);
+			System.out.println("Description: " + description);
+
+			// Find the existing challenge
+			Challenges existingChallenge = challengeRepository.findById(challengeId)
+					.orElseThrow(() -> new RuntimeException("Challenge not found"));
+
+			// Validate inputs
+			if (title == null || title.isEmpty()) {
+				model.addAttribute("error", "Challenge title cannot be empty.");
+				return "editChallenge";
+			}
+			if (description == null || description.isEmpty()) {
+				model.addAttribute("error", "Challenge description cannot be empty.");
+				return "editChallenge";
+			}
+
+			// Update metadata
+			existingChallenge.setChallengeTitle(title);
+			existingChallenge.setDescription(description);
+
+			// Handle file upload if a new file is provided
+			if (file != null && !file.isEmpty()) {
+				if (!file.getContentType().startsWith("image/")) {
+					model.addAttribute("error", "Only image files are allowed.");
+					return "editChallenge";
+				}
+
+				// Set the upload directory
+				File uploadDirectory = new File(uploadDir);
+				if (!uploadDirectory.exists()) {
+					uploadDirectory.mkdirs(); // Create the directory if it does not exist
+				}
+
+				// Generate a unique filename
+				String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+				String filePath = uploadDirectory.getAbsolutePath() + File.separator + uniqueFilename;
+
+				// Save the file
+				file.transferTo(new File(filePath));
+
+				// Update the challenge with the new file path
+				existingChallenge.setImagePath(uniqueFilename);
+			}
+
+			// Save updated challenge
+			challengeRepository.save(existingChallenge);
+			
+			Challenges ch = challengeRepository.findById(challengeId)
+					.orElseThrow(() -> new RuntimeException("Challenge not found"));
+
+
+			model.addAttribute("success", "Challenge updated successfully.");
+			model.addAttribute("challenge",ch);
+			return "editChallenge";
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("error", "An error occurred while updating the challenge.");
+			return "editChallenge";
+		} catch (RuntimeException e) {
+			model.addAttribute("error", e.getMessage());
+			return "editChallenge";
+		}
+	}
+
+	@PostMapping("/deleteChallenge/{id}")
+	public String deleteChallenge(@PathVariable("id") Long challengeId, Model model) {
+	    try {
+	        // Check if the challenge exists
+	        Challenges challenge = challengeRepository.findById(challengeId)
+	                .orElseThrow(() -> new RuntimeException("Challenge not found"));
+
+	        // Delete the challenge
+	        challengeRepository.delete(challenge);
+
+	        // Redirect with a success message
+	        model.addAttribute("success", "Challenge deleted successfully.");
+	        return "redirect:/adminChallenges"; // Redirect to the challenges list page
+	    } catch (RuntimeException e) {
+	        model.addAttribute("error", e.getMessage());
+	        return "redirect:/adminChallenges"; // Redirect back to the challenges list page with an error
 	    }
+	}
 
-	 @PostMapping("/deleteUser/{id}")
-	 public String deleteUser(@PathVariable("id") Long id, Model model) {
-	        try {
-	            // Check if the user exists
-	            Optional<Users> userOpt = userRepository.findById(id);
-
-	            if (!userOpt.isPresent()) {
-	                // User not found, return an error message (or redirect with an error)
-	                model.addAttribute("error", "User not found!");
-	                return "redirect:/admindashboard"; // Redirect back to the dashboard
-	            }
-
-	            // Delete the user
-	            userRepository.deleteById(id);
-
-	            // Redirect to the dashboard after successful deletion
-	            model.addAttribute("success", "User deleted successfully.");
-	            return "redirect:/admindashboard";
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            model.addAttribute("error", "An error occurred while deleting the user.");
-	            return "redirect:/admindashboard"; // Redirect back to the dashboard in case of an error
-	        }
-	    }
-	
-	 @PostMapping("/createChallenge")
-	 public String createChallenge(@RequestParam("file") MultipartFile file, 
-	                               @RequestParam("title") String title,
-	                               @RequestParam("description") String description, 
-	                               Model model) {
-
-	     // Check if the file is empty
-	     if (file.isEmpty()) {
-	         model.addAttribute("error", "Please select an image to upload for the challenge.");
-	         return "create_challenge"; // Return to the challenge creation page with an error
-	     }
-
-	     // Log the title and description for debugging
-	     System.out.println("Challenge Title: " + title);
-	     System.out.println("Challenge Description: " + description);
-
-	     try {
-	         // Resolve the upload directory from application.properties
-	         File uploadDirectory = new File(uploadDir);
-	         if (!uploadDirectory.exists()) {
-	             uploadDirectory.mkdirs(); // Create the directory if it doesn't exist
-	         }
-
-	         // Generate a unique filename using UUID to avoid conflicts
-	         String originalFilename = file.getOriginalFilename();
-	         String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
-	         
-	         // Save the file to the directory with the unique filename
-	         String filePath = uploadDirectory.getAbsolutePath() + "/" + uniqueFilename;
-	         file.transferTo(new File(filePath));
-
-	         // Save the challenge metadata to the database
-	         Challenges challenge = new Challenges(title, description, uniqueFilename);
-	         
-	         // Save challenge data into the repository
-	         challengeRepository.save(challenge); // Save challenge to the database
-
-	         // Add success message to the model
-	         model.addAttribute("success", "Challenge created successfully.");
-	         return "createChallenge"; // Return to the challenge creation page with a success message
-	     } catch (IOException e) {
-	         e.printStackTrace();
-	         model.addAttribute("error", "An error occurred while creating the challenge.");
-	         return "createChallenge"; // Return to the challenge creation page with an error message
-	     }
-	 }
-	 
-	    @GetMapping("/allChallenges")
-	    public String getAllChallenges(Model model) {
-	        List<Challenges> challenges = challengeRepository.findAll();
-	        model.addAttribute("challenges", challenges);
-	        return "challenges"; // This refers to a view named 'challenges.html' (or .jsp depending on your view resolver)
-	    }
 }
