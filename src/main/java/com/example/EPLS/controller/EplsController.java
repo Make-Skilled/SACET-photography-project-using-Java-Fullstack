@@ -61,9 +61,16 @@ public class EplsController {
 	@GetMapping("/admindashboard")
 	public String adminDashboard(Model model) {
 		List<Users> allUsers = userRepository.findAll();
+		List<ChallengeRequests> participationRequests = challengeRequestRepository.findAll();
+		
+	    System.out.println("DEBUG: Participation Requests:");
+	    for (ChallengeRequests request : participationRequests) {
+	        System.out.println(request.toString());  // This will call the toString() method of ChallengeRequests
+	    }
 
 		// Add user details and the list of all users to the model
 		model.addAttribute("usersList", allUsers);
+		model.addAttribute("challengeRequests",participationRequests);
 		return "admindashboard"; // Serves admindashboard.html
 	}
 
@@ -486,7 +493,16 @@ public class EplsController {
 			// Fetch additional user details if stored in session
 			String userRequested = (String) session.getAttribute("fullname"); // Assume "userName" is stored in session
 			newRequest.setUserRequested(userRequested != null ? userRequested : "Anonymous");
-
+			
+			 // Fetch the challenge name from the ChallengeRepository
+	        Optional<Challenges> challenge = challengeRepository.findById(challengeId);
+	        if (!challenge.isPresent()) {
+	            model.addAttribute("message", "Challenge not found");
+	            return "redirect:/allChallenges";
+	        }
+	        String challengeName = challenge.get().getChallengeTitle();// Assuming the challenge object has a getChallengeName method
+	        
+	        newRequest.setChallengeName(challengeName);
 			newRequest.setUserEmail(userEmail);
 			newRequest.setCount(0); // Default count is 0
 			newRequest.setStatus("pending"); // Default status is "pending"
@@ -501,6 +517,94 @@ public class EplsController {
 			model.addAttribute("message", "An error occured while sending the request");
 			return "redirect:/allchallenges";
 		}
+	}
+	
+	@PostMapping("/acceptRequest/{id}")
+	public String acceptRequest(@PathVariable("id") Long id, Model model) {
+	    try {
+	        // Fetch the ChallengeRequest by ID from the database
+	        Optional<ChallengeRequests> optionalRequest = challengeRequestRepository.findById(id);
+	        
+	        // Check if the request exists
+	        if (optionalRequest.isPresent()) {
+	            ChallengeRequests request = optionalRequest.get();
+	            
+	            // Update the status to "accepted"
+	            request.setStatus("accepted");
+	            
+	            // Save the updated request back to the repository
+	            challengeRequestRepository.save(request);
+	            
+	            // Optionally, add a success message to the model
+	            model.addAttribute("message", "Request has been accepted successfully!");
+	        } else {
+	            // If the request is not found, add an error message to the model
+	            model.addAttribute("message", "Challenge request not found!");
+	        }
+	        
+	        // Redirect to the admin dashboard or relevant page
+	        return "redirect:/admindashboard";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("message", "An error occurred while accepting the request.");
+	        return "redirect:/admindashboard";
+	    }
+	}
+
+	@PostMapping("/rejectRequest/{id}")
+	public String rejectRequest(@PathVariable("id") Long id, Model model) {
+	    try {
+	        // Fetch the ChallengeRequest by ID from the database
+	        Optional<ChallengeRequests> optionalRequest = challengeRequestRepository.findById(id);
+	        
+	        // Check if the request exists
+	        if (optionalRequest.isPresent()) {
+	            ChallengeRequests request = optionalRequest.get();
+	            
+	            // Update the status to "rejected"
+	            request.setStatus("rejected");
+	            
+	            // Save the updated request back to the repository
+	            challengeRequestRepository.save(request);
+	            
+	            // Optionally, add a success message to the model
+	            model.addAttribute("message", "Request has been rejected successfully!");
+	        } else {
+	            // If the request is not found, add an error message to the model
+	            model.addAttribute("message", "Challenge request not found!");
+	        }
+	        
+	        // Redirect to the admin dashboard or relevant page
+	        return "redirect:/admindashboard";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("message", "An error occurred while rejecting the request.");
+	        return "redirect:/admindashboard";
+	    }
+	}
+	
+	@GetMapping("/userRequests")
+	public String getUserRequests(Model model, HttpSession session) {
+	    try {
+	        // Retrieve userEmail from session
+	        String userEmail = (String) session.getAttribute("userEmail");
+
+	        // Check if userEmail exists in session, otherwise redirect to login page
+	        if (userEmail == null) {
+	            return "login";  // Or any page to handle when user is not logged in
+	        }
+
+	        // Fetch all ChallengeRequests associated with the user's email
+	        List<ChallengeRequests> userRequests = challengeRequestRepository.findByUserEmail(userEmail);
+
+	        // Add the list of requests to the model for rendering in the view
+	        model.addAttribute("userRequests", userRequests);
+	        return "userRequestsPage";  // The view page to show user's requests
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("message", "An error occurred while fetching the requests");
+	        return "errorPage";  // The page to display error if fetching requests fails
+	    }
 	}
 
 }

@@ -20,6 +20,9 @@ public class ChallengeRequests {
 	private String userRequested;
 	
 	@Column
+	private String challengeName;
+	
+	@Column
 	private String userEmail;
 	
 	@Column(nullable = false)
@@ -75,5 +78,23 @@ public class ChallengeRequests {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getChallengeName() {
+		return challengeName;
+	}
+
+	public void setChallengeName(String challengeName) {
+		this.challengeName = challengeName;
+	}
+
+	@Override
+	public String toString() {
+		return "ChallengeRequests [id=" + id + ", challengeId=" + challengeId + ", userRequested=" + userRequested
+				+ ", challengeName=" + challengeName + ", userEmail=" + userEmail + ", count=" + count + ", status="
+				+ status + "]";
 	}	
+	
+	
+	
 }
