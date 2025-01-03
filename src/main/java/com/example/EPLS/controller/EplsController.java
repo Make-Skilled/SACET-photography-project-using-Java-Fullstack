@@ -140,7 +140,7 @@ public class EplsController {
 		// Authentication succeeded
 		session.setAttribute("userEmail", user.getEmail());
 		model.addAttribute("user", user); // Add user object to model for personalization
-		return "dashboard"; // Redirect to the user dashboard
+		return "redirect:/dashboard"; // Redirect to the user dashboard
 	}
 
 	@GetMapping("/logout")
