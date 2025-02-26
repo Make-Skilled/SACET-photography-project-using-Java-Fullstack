@@ -1,174 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Challenges</title>
-  <style>
-    /* General Styles */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #81a4a8 50%, #356d73 50%); /* Light and Dark Teal Gradient */
-      color: #333;
-    }
-
-    header {
-      background: #356d73; /* Dark teal */
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    nav {
-      background: #81a4a8; /* Light teal */
-      padding: 10px 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #fffefe;
-      font-weight: bold;
-      font-size: 1rem;
-      padding: 8px 15px;
-      border-radius: 5px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    nav a:hover {
-      background: #f7f7f7;
-      color: #555;
-    }
-
-    .challenges-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 30px;
-      margin: 40px auto;
-      padding: 20px;
-      max-width: 1200px;
-    }
-
-    .challenge-card {
-      width: 300px;
-      padding: 20px;
-      border-radius: 15px;
-      text-align: center;
-      background: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .challenge-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .challenge-card img {
-      width: 80%;
-      height: 120px;
-      margin-bottom: 15px;
-    }
-
-    .challenge-card h3 {
-      font-size: 1.5rem;
-      color: #444;
-      margin-bottom: 10px;
-    }
-
-    .challenge-card p {
-      font-size: 1rem;
-      color: #555;
-      line-height: 1.5;
-    }
-
-    .actions {
-      margin-top: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .actions button {
-      padding: 8px 15px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: white;
-      background: #356d73; /* Dark teal */
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .actions button:hover {
-      background: #81a4a8; /* Light teal */
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #356d73; /* Dark teal */
-      color: white;
-      width: 100%;
-      bottom: 0;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Challenges</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-gray-800 py-4">
+        <div class="container mx-auto flex justify-center space-x-6 px-4 flex-wrap">
+            <a href="/admindashboard" class="text-white hover:text-gray-300 transition">Dashboard</a>
+            <a href="/adminChallenges" class="text-white hover:text-gray-300 transition">Challenges</a>
+            <a href="/review" class="text-white hover:text-gray-300 transition">Reviews</a>
+            <a href="/profile" class="text-white hover:text-gray-300 transition">Profile</a>
+            <a href="/logout" class="text-white hover:text-red-300 transition">Logout</a>
+        </div>
+    </nav>
 
-<header>
-  <h1>Challenges</h1>
-</header>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header with Add Challenge Button -->
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Photography Challenges</h2>
+            <a href="/createChallenge" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+                Add New Challenge
+            </a>
+        </div>
 
-<nav>
-  <a href="#users">Manage Users</a>
-  <a href="#courses">Manage Courses</a>
-  <a href="/adminChallenges">Manage Challenges</a>
-  <a href="/logout">Logout</a>
-</nav>
+        <!-- Challenges Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="challenge : ${challenges}" class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img th:src="@{uploads/{imagePath}(imagePath=${challenge.imagePath})}" 
+                     alt="Challenge Image" 
+                     class="w-full h-48 object-cover">
+                
+                <div class="p-6">
+                    <h3 th:text="${challenge.challengeTitle}" 
+                        class="text-xl font-semibold text-gray-900 mb-2">
+                        Challenge Title
+                    </h3>
+                    
+                    <p th:text="${challenge.description}" 
+                       class="text-gray-600 mb-4 line-clamp-3">
+                        Challenge Description
+                    </p>
 
-<div class="challenges-container">
-    <div th:each="challenge : ${challenges}">
-        <div class="challenge-card">
-            <!-- Dynamic image path -->
-            <img th:src="@{uploads/{imagePath}(imagePath=${challenge.imagePath})}" alt="Challenge Image">
-            
-            <h3 th:text="${challenge.challengeTitle}">Challenge Title</h3>
-            <p th:text="${challenge.description}">Challenge Description</p>
+                    <div class="flex justify-between items-center">
+                        <form th:action="@{/editChallenge/{id}(id=${challenge.id})}" method="GET">
+                            <button type="submit" 
+                                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+                                Edit
+                            </button>
+                        </form>
 
-            <div class="actions">
-                <!-- Edit button (will call the edit API) -->
-                <form th:action="@{/editChallenge/{id}(id=${challenge.id})}" method="GET">
-                    <button type="submit">Edit</button>
-                </form>
-
-                <!-- Delete button (will call the delete API) -->
-                <form th:action="@{/deleteChallenge/{id}(id=${challenge.id})}" method="POST" onsubmit="return confirm('Are you sure you want to delete this challenge?');">
-                    <button type="submit">Delete</button>
-                </form>
+                        <form th:action="@{/deleteChallenge/{id}(id=${challenge.id})}" 
+                              method="POST" 
+                              onsubmit="return confirm('Are you sure you want to delete this challenge?');">
+                            <button type="submit" 
+                                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<footer>
-  <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
-</footer>
-
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+            <p>&copy; 2024 Photography Learning System. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

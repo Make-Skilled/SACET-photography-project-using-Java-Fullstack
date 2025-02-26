@@ -1,173 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload</title>
-  <style>
-    /* General Styles */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #356d73 50%, #81a4a8 50%);
-      color: #333;
-    }
-
-    header {
-      background: #356d73;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    nav {
-      background: #81a4a8;
-      padding: 10px 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #f5f2f2;
-      font-weight: bold;
-      font-size: 1rem;
-      padding: 8px 15px;
-      border-radius: 5px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    nav a:hover {
-      background: #f7f7f7;
-      color: #555;
-    }
-
-    .upload-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-      margin: 40px auto;
-      max-width: 800px;
-      background: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 15px;
-	  margin-bottom:200px;
-    }
-
-    .upload-container h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #356d73;
-    }
-
-    .upload-container p {
-      font-size: 1rem;
-      color: #555;
-      text-align: center;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-
-    .upload-container form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .upload-container form input[type="text"],
-    .upload-container form input[type="file"],
-    .upload-container form textarea {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      width: 100%;
-      max-width: 400px;
-      font-size: 1rem;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .upload-container form textarea {
-      resize: none;
-      height: 100px;
-    }
-
-    .upload-container form button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: white;
-      background: #356d73;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .upload-container form button:hover {
-      background: #2f5b56;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #356d73;
-      color: white;
-      width: 100%;
-      bottom: 0;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Photos - Photography Learning System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-teal-400 to-teal-700 min-h-screen">
+    <!-- Header -->
+    <header class="bg-teal-800 text-white py-8 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-4xl font-bold mb-4">Upload Your Photos</h1>
+            <p class="text-xl text-teal-100">Share your creativity with the world</p>
+        </div>
+    </header>
 
-<header>
-  <h1>Upload Your Photos</h1>
-</header>
+    <!-- Navigation -->
+    <nav class="bg-teal-600 py-4 shadow-md">
+        <div class="container mx-auto flex justify-center space-x-6 px-4 flex-wrap">
+            <a href="/dashboard" class="text-white hover:text-teal-200 transition">Home</a>
+            <a href="/learning" class="text-white hover:text-teal-200 transition">Learning</a>
+            <a href="/upload" class="text-white hover:text-teal-200 transition">Upload</a>
+            <a href="/library" class="text-white hover:text-teal-200 transition">Library</a>
+            <a href="/allChallenges" class="text-white hover:text-teal-200 transition">Challenges</a>
+            <a href="/review" class="text-white hover:text-teal-200 transition">Reviews</a>
+            <a href="/profile" class="text-white hover:text-teal-200 transition">Profile</a>
+            <a href="/logout" class="text-white hover:text-red-200 transition">Logout</a>
+        </div>
+    </nav>
 
-<nav>
-  <a href="/dashboard">Home</a>
-  <a href="/learning">Learning</a>
-  <a href="/upload">Upload</a>
-  <a href="/library">Library</a>
-  <a href="/allChallenges">Challenges</a>
-  <a href="/userRequests">My Requests</a>
-  <a href="/review">Reviews</a>
-  <a href="/profile">Profile</a>
-  <a href="/logout">Logout</a>
-</nav>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-teal-800 mb-4">Share Your Creativity</h2>
+                <p class="text-gray-600">Upload your amazing photographs to showcase your talent to the world. Build your portfolio and gain valuable feedback from the community.</p>
+            </div>
 
-<div class="upload-container">
-  <h2>Share Your Creativity</h2>
-  <p>
-    Upload your amazing photographs to showcase your talent to the world. Build your portfolio and gain valuable feedback from the community.
-  </p>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="text" name="title" placeholder="Enter a title for your photo" required />
+            <form action="/upload" method="post" enctype="multipart/form-data" class="space-y-6">
+                <!-- Title Input -->
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Photo Title</label>
+                    <input type="text" 
+                           id="title" 
+                           name="title" 
+                           required 
+                           class="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 
+                                  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                           placeholder="Enter a title for your photo">
+                </div>
 
-      <input type="file" name="file" accept="image/*" required />
+                <!-- File Upload -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Photo Upload</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500">
+                                    <span>Upload a file</span>
+                                    <input id="file-upload" name="file" type="file" accept="image/*" required class="sr-only">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                    </div>
+                </div>
 
-      <textarea name="description" placeholder="Add a caption or description for your photo..." required></textarea>
+                <!-- Description Input -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="description" 
+                              name="description" 
+                              rows="4" 
+                              required
+                              class="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 
+                                     focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                              placeholder="Add a caption or description for your photo..."></textarea>
+                </div>
 
-      <button type="submit">Upload Photo</button>
-  </form>
-</div>
+                <!-- Submit Button -->
+                <div class="flex justify-center">
+                    <button type="submit" 
+                            class="px-8 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md 
+                                   hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 
+                                   transition-colors duration-200">
+                        Upload Photo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<footer>
-  <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
-</footer>
+    <!-- Footer -->
+    <footer class="bg-teal-800 text-white py-6 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Photography Skills Platform. All Rights Reserved.</p>
+        </div>
+    </footer>
 
+    <!-- Optional: Add drag and drop functionality -->
+    <script>
+        const dropZone = document.querySelector('form');
+        const fileInput = document.getElementById('file-upload');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('border-teal-500');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('border-teal-500');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+        }
+    </script>
 </body>
 </html>

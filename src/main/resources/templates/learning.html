@@ -1,333 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photography Learning Hub</title>
-  <style>
-    /* General Styles */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #356d73 50%, #81a4a8 50%);
-      color: #333;
-    }
-
-    header {
-      background: #356d73;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    header p {
-      font-size: 1.2rem;
-    }
-
-    nav {
-      background: #81a4a8;
-      padding: 10px 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #fcfafa;
-      font-weight: bold;
-      font-size: 1rem;
-      padding: 8px 15px;
-      border-radius: 5px;
-    }
-
-    nav a:hover {
-      background: #f7f7f7;
-      color: #555;
-    }
-
-    .learning-container {
-      padding: 40px;
-      max-width: 1000px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    section {
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      font-size: 2rem;
-      color: #444;
-    }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    li {
-      font-size: 1.2rem;
-      margin: 10px 0;
-    }
-
-    .challenge-card {
-      background: #f9f9f9;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .challenge-card h3 {
-      margin-top: 0;
-    }
-
-    .challenge-card button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #356d73;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .challenge-card button:hover {
-      background-color: #2c5a51;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #356d73;
-      color: white;
-      width: 100%;
-      bottom: 0;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Quiz Styling */
-    form {
-      margin-top: 20px;
-    }
-
-    form label {
-      font-size: 1.2rem;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    form input[type="radio"] {
-      margin-right: 10px;
-    }
-
-    #quiz-result {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #356d73;
-    }
-
-    /* Styling for Resources Section */
-    .resources-section {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .resource-card {
-      background-color: #fff;
-      padding: 20px;
-      width: 32%;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
-    }
-
-    .resource-card:hover {
-      transform: scale(1.05);
-    }
-
-    .resource-card h3 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      color: #444;
-    }
-
-    .resource-card p {
-      font-size: 1rem;
-      color: #555;
-    }
-
-    .resource-card a {
-      text-decoration: none;
-      color: #356d73;
-      font-weight: bold;
-    }
-
-    .resource-card a:hover {
-      color: #2c5a51;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-teal-400 to-teal-700 min-h-screen">
 
-<header>
-  <h1>Welcome to Photography Learning Hub</h1>
-  <p>Explore and master the art of photography through structured lessons, quizzes, and creative challenges!</p>
-</header>
-<nav>
-  <a href="/dashboard">Home</a>
-  <a href="/learning">Learning</a>
-  <a href="/upload">Upload</a>
-  <a href="/library">Library</a>
-  <a href="/allChallenges">Challenges</a>
-  <a href="/review">Reviews</a>
-  <a href="/userRequests">My Requests</a>
-  <a href="/profile">Profile</a>
-  <a href="/logout">Logout</a>
-</nav>
-<nav>
-  <a href="#intro">Introduction</a>
-  <a href="#techniques">Techniques</a>
-  <a href="#challenges">Challenges</a>
-  <a href="#quiz">Quiz</a>
-  <a href="#resources">Resources</a>
-  <a href="dashboard.html"> Back To Home</a>
-</nav>
+    <!-- Header -->
+    <header class="bg-teal-800 text-white py-8 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-4xl font-bold mb-4">Welcome to Photography Learning Hub</h1>
+            <p class="text-xl text-teal-100">Explore and master the art of photography through structured lessons, quizzes, and creative challenges!</p>
+        </div>
+    </header>
 
-<div class="learning-container">
-  <!-- Introduction Section -->
-  <section id="intro">
-    <h2>Introduction to Photography</h2>
-    <p>Photography is much more than simply capturing images. It’s about telling stories, evoking emotions, and capturing fleeting moments that may never occur again. A solid foundation in the fundamentals is essential for anyone wanting to master the art of photography. In this section, we’ll cover some of the basics that will help you get started with your photography journey.</p>
-    <ul>
-      <li><strong>Exposure Triangle:</strong> The exposure triangle is the fundamental concept for controlling exposure in your photographs. It involves three key components: ISO, shutter speed, and aperture. Understanding how to balance these elements will allow you to achieve the perfect exposure for any lighting condition.</li>
-      <li><strong>Composition Basics:</strong> Composition is the art of arranging visual elements within a frame. It’s how you tell your story and engage your viewers. Learning techniques like the rule of thirds, leading lines, framing, and symmetry will help you create dynamic and visually compelling images.</li>
-      <li><strong>Understanding Light:</strong> Light is perhaps the most important element in photography. Mastering how light interacts with your subject, your camera settings, and your composition will set you apart as a photographer.</li>
-    </ul>
-  </section>
+    <!-- Navigation -->
+    <nav class="bg-teal-600 py-4 shadow-md">
+        <div class="container mx-auto flex justify-center space-x-6 px-4 flex-wrap">
+            <a href="/dashboard" class="text-white hover:text-teal-200 transition">Home</a>
+            <a href="/learning" class="text-white hover:text-teal-200 transition">Learning</a>
+            <a href="/upload" class="text-white hover:text-teal-200 transition">Upload</a>
+            <a href="/library" class="text-white hover:text-teal-200 transition">Library</a>
+            <a href="/allChallenges" class="text-white hover:text-teal-200 transition">Challenges</a>
+            <a href="/review" class="text-white hover:text-teal-200 transition">Reviews</a>
+            <a href="/profile" class="text-white hover:text-teal-200 transition">Profile</a>
+            <a href="/logout" class="text-white hover:text-red-200 transition">Logout</a>
+        </div>
+    </nav>
 
-  <!-- Photography Techniques Section -->
-  <section id="techniques">
-    <h2>Photography Techniques</h2>
-    <ul>
-      <li><strong>Portrait Photography:</strong> Capturing the essence of a person, focusing on lighting and subject expression.</li>
-      <li><strong>Landscape Photography:</strong> Showcasing the beauty of nature with techniques like wide-angle lenses and golden hour shooting.</li>
-      <li><strong>Macro Photography:</strong> Capturing tiny details using specialized lenses and shallow depth of field.</li>
-    </ul>
-  </section>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <!-- Introduction Section -->
+            <section id="intro" class="mb-12">
+                <h2 class="text-3xl font-bold text-teal-800 mb-4">Introduction to Photography</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Photography is much more than simply capturing images. It's about telling stories, evoking emotions, and capturing fleeting moments that may never occur again. A solid foundation in the fundamentals is essential for anyone wanting to master the art of photography. In this section, we'll cover some of the basics that will help you get started with your photography journey.
+                </p>
+            </section>
 
-  <!-- Photography Challenges Section -->
-  <section id="challenges">
-    <h2>Photography Challenges</h2>
-    <div class="challenge-card">
-      <h3>Black and White Photography Challenge</h3>
-      <p>Challenge yourself by shooting exclusively in black and white. This will help you focus on composition and lighting.</p>
-      <button onclick="startChallenge('Black and White')">Start Challenge</button>
+            <!-- Learning Modules -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-teal-800 mb-6">Learning Modules</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Module 1 -->
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Camera Basics</h3>
+                        <p class="text-gray-600 mb-4">Learn about camera types, settings, and basic operations.</p>
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">Start Learning</button>
+                    </div>
+                    <!-- Module 2 -->
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Composition</h3>
+                        <p class="text-gray-600 mb-4">Master the rules of composition and framing techniques.</p>
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">Start Learning</button>
+                    </div>
+                    <!-- Module 3 -->
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Lighting</h3>
+                        <p class="text-gray-600 mb-4">Understand natural and artificial lighting techniques.</p>
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">Start Learning</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-teal-800 mb-6">Test Your Knowledge</h2>
+                <form id="quiz-form" class="bg-gray-50 rounded-xl p-6 shadow-md">
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-lg font-medium text-gray-700 mb-3">What is aperture in photography?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="q1" value="a" class="text-teal-600">
+                                    <span class="text-gray-700">The opening in the lens that lets light in</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="q1" value="b" class="text-teal-600">
+                                    <span class="text-gray-700">The camera's shutter speed</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="q1" value="c" class="text-teal-600">
+                                    <span class="text-gray-700">The camera's ISO setting</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-6 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition">Submit Quiz</button>
+                </form>
+                <div id="quiz-result" class="mt-4 text-center font-semibold hidden"></div>
+            </section>
+
+            <!-- Resources Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-teal-800 mb-6">Additional Resources</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Photography Books</h3>
+                        <p class="text-gray-600 mb-4">Curated collection of essential photography books for all skill levels.</p>
+                        <a href="#" class="text-teal-600 hover:text-teal-800 font-medium">Explore Books →</a>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Video Tutorials</h3>
+                        <p class="text-gray-600 mb-4">Watch expert photographers share their techniques and tips.</p>
+                        <a href="#" class="text-teal-600 hover:text-teal-800 font-medium">Watch Now →</a>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold text-teal-700 mb-3">Community Forums</h3>
+                        <p class="text-gray-600 mb-4">Connect with other photographers and share your experiences.</p>
+                        <a href="#" class="text-teal-600 hover:text-teal-800 font-medium">Join Discussion →</a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <div class="challenge-card">
-      <h3>Portrait Photography Challenge</h3>
-      <p>Take portraits of people and experiment with different lighting setups.</p>
-      <button onclick="startChallenge('Portrait Photography')">Start Challenge</button>
-    </div>
-  </section>
+    <!-- Footer -->
+    <footer class="bg-teal-800 text-white py-6 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Photography Learning Hub. All Rights Reserved.</p>
+        </div>
+    </footer>
 
-  <!-- Photography Quiz Section -->
-  <section id="quiz">
-    <h2>Test Your Knowledge with Our Quiz</h2>
-    <form id="quiz-form">
-      <label>1. What does the aperture control in a camera?</label><br>
-      <input type="radio" name="question1" value="A"> A) Amount of light<br>
-      <input type="radio" name="question1" value="B"> B) Color of the photo<br>
-      <input type="radio" name="question1" value="C"> C) Noise in the photo<br><br>
+    <script>
+        // Handle quiz submission
+        document.getElementById('quiz-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const result = document.getElementById('quiz-result');
+            result.classList.remove('hidden');
+            result.classList.add('text-teal-600');
+            result.textContent = 'Thank you for completing the quiz!';
+        });
 
-      <label>2. What does ISO control?</label><br>
-      <input type="radio" name="question2" value="A"> A) Sensitivity to light<br>
-      <input type="radio" name="question2" value="B"> B) The camera's shutter speed<br>
-      <input type="radio" name="question2" value="C"> C) The depth of field<br><br>
-
-      <label>3. What is the "rule of thirds" in photography?</label><br>
-      <input type="radio" name="question3" value="A"> A) A rule for setting camera ISO<br>
-      <input type="radio" name="question3" value="B"> B) A guideline for composing images<br>
-      <input type="radio" name="question3" value="C"> C) A technique for focusing<br><br>
-
-      <button type="submit">Submit</button>
-    </form>
-
-    <div id="quiz-result"></div>
-  </section>
-
-  <!-- Resources Section -->
-  <section id="resources">
-    <h2>Additional Resources</h2>
-    <div class="resources-section">
-      <div class="resource-card">
-        <h3>Online Photography Courses</h3>
-        <p>Enhance your skills with free and paid online photography courses.</p>
-        <a href="#">Explore Courses</a>
-      </div>
-
-      <div class="resource-card">
-        <h3>Photography Equipment Guide</h3>
-        <p>Discover the best camera gear for different photography styles.</p>
-        <a href="#">View Guide</a>
-      </div>
-
-      <div class="resource-card">
-        <h3>Photo Editing Software</h3>
-        <p>Learn how to edit your photos using the best software available.</p>
-        <a href="#">Learn More</a>
-      </div>
-    </div>
-  </section>
-</div>
-
-<footer>
-  <p>&copy; 2024 Photography Learning Hub | All Rights Reserved</p>
-</footer>
-
-<script>
-  // Handle quiz submission
-  document.getElementById('quiz-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    let score = 0;
-    const answers = {
-      question1: 'A',
-      question2: 'A',
-      question3: 'B'
-    };
-
-    // Check answers
-    for (let question in answers) {
-      const selected = document.querySelector(`input[name="${question}"]:checked`);
-      if (selected && selected.value === answers[question]) {
-        score++;
-      }
-    }
-
-    // Display result
-    document.getElementById('quiz-result').innerText = `You scored ${score} out of 3!`;
-  });
-
-  // Start challenge
-  function startChallenge(challenge) {
-    alert(`Starting the ${challenge} challenge!`);
-  }
-</script>
+        function startChallenge(challenge) {
+            // Challenge functionality
+            console.log('Starting challenge:', challenge);
+        }
+    </script>
 
 </body>
 </html>

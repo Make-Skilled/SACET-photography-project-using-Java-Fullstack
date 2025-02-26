@@ -1,136 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Edit Challenge</title>
-	<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			margin: 0;
-			padding: 0;
-			background: linear-gradient(135deg, #81a4a8 50%, #356d73 50%);
-			/* Light and Dark Teal Gradient */
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-		}
-
-		.form-container {
-			background: #fff;
-			padding: 30px;
-			border-radius: 15px;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-			width: 350px;
-			text-align: center;
-		}
-
-		.form-container h2 {
-			margin-bottom: 20px;
-			font-size: 1.8rem;
-			color: #356d73;
-			/* Dark teal */
-		}
-
-		.form-container input,
-		.form-container textarea {
-			width: 90%;
-			padding: 12px;
-			margin: 10px 0;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			font-size: 1rem;
-		}
-
-		.form-container textarea {
-			resize: vertical;
-			height: 120px;
-		}
-
-		.form-container button {
-			background: #356d73;
-			/* Dark teal */
-			color: white;
-			font-size: 1rem;
-			padding: 10px 15px;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background 0.3s ease;
-			margin-top: 10px;
-		}
-
-		.form-container button:hover {
-			background: #81a4a8;
-			/* Light teal */
-		}
-
-		.form-container p {
-			margin-top: 15px;
-			font-size: 0.9rem;
-		}
-
-		.form-container a {
-			color: #356d73;
-			/* Dark teal */
-			text-decoration: none;
-		}
-
-		.form-container a:hover {
-			text-decoration: underline;
-		}
-
-		.form-container input[type="file"] {
-			background: #fff;
-			color: #356d73;
-			border: 1px solid #ccc;
-			font-size: 1rem;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-indigo-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold">Edit Challenge</span>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="/admin/dashboard" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500">Dashboard</a>
+                    <a href="/adminChallenges" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500">Challenges</a>
+                    <a href="/logout" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<body>
-	<nav>
-		<a href="#users">Manage Users</a>
-		<a href="#courses">Manage Courses</a>
-		<a href="/adminChallenges">Manage Challenges</a>
-		<a href="/logout">Logout</a>
-	</nav>
-	<div class="form-container">
-		<h2>Edit Challenge</h2>
+    <!-- Main Content -->
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Challenge</h2>
 
-		<!-- Display Success and Error Messages -->
-		<center>
-			<p th:text="${success}"></p>
-		</center>
-		<p th:if="${error}" th:text="${error}" style="color: red;"></p>
+            <!-- Success Message -->
+            <div th:if="${success}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
+                <p th:text="${success}" class="text-center"></p>
+            </div>
 
-		<!-- Edit Challenge Form -->
-		<form action="/editChallenge" method="post" enctype="multipart/form-data">
-			<!-- Hidden Field for Challenge ID -->
-			<input type="hidden" name="id" th:value="${challenge.id}" />
+            <!-- Error Message -->
+            <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+                <p th:text="${error}" class="text-center"></p>
+            </div>
 
-			<!-- Challenge Title -->
-			<input type="text" placeholder="Challenge Title" name="title" th:value="${challenge.challengeTitle}"
-				required>
+            <!-- Edit Challenge Form -->
+            <form action="/editChallenge" method="post" enctype="multipart/form-data" class="space-y-6">
+                <!-- Hidden Challenge ID -->
+                <input type="hidden" name="id" th:value="${challenge.id}">
 
-			<!-- Challenge Description -->
-			<textarea placeholder="Challenge Description" name="description" required>
-	        [[${challenge.description}]]
-	    </textarea>
+                <!-- Challenge Title -->
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Challenge Title</label>
+                    <input type="text" 
+                           id="title"
+                           name="title" 
+                           th:value="${challenge.challengeTitle}"
+                           required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
 
-			<!-- Image Upload -->
-			<input type="file" name="file" accept="image/*">
+                <!-- Challenge Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Challenge Description</label>
+                    <textarea id="description"
+                              name="description"
+                              rows="4"
+                              required
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">[[${challenge.description}]]</textarea>
+                </div>
 
-			<!-- Submit Button -->
-			<button type="submit">Update Challenge</button>
-		</form>
+                <!-- Image Upload -->
+                <div>
+                    <label for="file" class="block text-sm font-medium text-gray-700">Challenge Image</label>
+                    <input type="file"
+                           id="file"
+                           name="file"
+                           accept="image/*"
+                           class="mt-1 block w-full text-sm text-gray-500
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-md file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-indigo-50 file:text-indigo-700
+                                  hover:file:bg-indigo-100">
+                </div>
 
-		<!-- Link to View Challenges -->
-		<p>Want to view challenges? <a href="/adminChallenges">View Challenges</a></p>
-	</div>
+                <!-- Submit Button -->
+                <div class="flex justify-between items-center pt-4">
+                    <a href="/adminChallenges" 
+                       class="text-indigo-600 hover:text-indigo-900">
+                        Back to Challenges
+                    </a>
+                    <button type="submit"
+                            class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+                        Update Challenge
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+            <p>&copy; 2024 Photography Learning System. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
-
 </html>

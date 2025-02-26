@@ -1,115 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Create Challenge</title>
-	<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			margin: 0;
-			padding: 0;
-			background: linear-gradient(135deg, #81a4a8 50%, #356d73 50%);
-			/* Light and Dark Teal Gradient */
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-		}
-
-		.form-container {
-			background: #fff;
-			padding: 30px;
-			border-radius: 15px;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-			width: 350px;
-			text-align: center;
-		}
-
-		.form-container h2 {
-			margin-bottom: 20px;
-			font-size: 1.8rem;
-			color: #356d73;
-			/* Dark teal */
-		}
-
-		.form-container input,
-		.form-container textarea {
-			width: 90%;
-			padding: 12px;
-			margin: 10px 0;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			font-size: 1rem;
-		}
-
-		.form-container textarea {
-			resize: vertical;
-			height: 120px;
-		}
-
-		.form-container button {
-			background: #356d73;
-			/* Dark teal */
-			color: white;
-			font-size: 1rem;
-			padding: 10px 15px;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background 0.3s ease;
-			margin-top: 10px;
-		}
-
-		.form-container button:hover {
-			background: #81a4a8;
-			/* Light teal */
-		}
-
-		.form-container p {
-			margin-top: 15px;
-			font-size: 0.9rem;
-		}
-
-		.form-container a {
-			color: #356d73;
-			/* Dark teal */
-			text-decoration: none;
-		}
-
-		.form-container a:hover {
-			text-decoration: underline;
-		}
-
-		.form-container input[type="file"] {
-			background: #fff;
-			color: #356d73;
-			border: 1px solid #ccc;
-			font-size: 1rem;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 py-4">
+        <div class="container mx-auto flex justify-center space-x-6 px-4 flex-wrap">
+            <a href="/admindashboard" class="text-white hover:text-gray-300 transition">Dashboard</a>
+            <a href="/adminChallenges" class="text-white hover:text-gray-300 transition">Challenges</a>
+            <a href="/review" class="text-white hover:text-gray-300 transition">Reviews</a>
+            <a href="/profile" class="text-white hover:text-gray-300 transition">Profile</a>
+            <a href="/logout" class="text-white hover:text-red-300 transition">Logout</a>
+        </div>
+    </nav>
 
-<body>
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div th:if="${success}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
+                <p th:text="${success}" class="text-center"></p>
+            </div>
+            <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+                <p th:text="${error}" class="text-center"></p>
+            </div>
 
-	<div class="form-container">
-		<h2>Create Challenge</h2>
+            <form action="/createChallenge" method="post" enctype="multipart/form-data" class="space-y-6">
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Challenge Title</label>
+                    <input type="text" id="title" name="title" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
 
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="description" name="description" rows="4" required
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Challenge Image</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input type="file" name="file" accept="image/*" required class="sr-only">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                    </div>
+                </div>
 
-		<center>
-			<p th:text="${success}"></p>
-		</center>
-		<p th:if="${error}" th:text="${error}" style="color: red;"></p>
-		<form action="/createChallenge" method="post" enctype="multipart/form-data">
-			<input type="text" placeholder="Challenge Title" name="title" required>
-			<textarea placeholder="Challenge Description" name="description" required></textarea>
-			<input type="file" name="file" accept="image/*" required>
-			<button type="submit">Create Challenge</button>
-		</form>
-		<p>Want to view challenges? <a href="/adminChallenges">View Challenges</a></p>
-	</div>
+                <div class="flex justify-between pt-4">
+                    <a href="/adminChallenges" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Cancel
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                        Create Challenge
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+            <p>&copy; 2024 Photography Learning System. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
-
 </html>
