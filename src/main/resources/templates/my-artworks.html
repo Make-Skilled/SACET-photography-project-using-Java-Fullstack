@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Artworks - SACET Photography</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div th:replace="navbar :: navbar"></div>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">My Artworks</h1>
+
+        <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="artwork : ${artworks}" class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="relative aspect-w-16 aspect-h-9">
+                    <img th:src="@{'/uploads/' + ${artwork.imagePath}}" 
+                         alt="Artwork" 
+                         class="w-full h-64 object-cover">
+                    <div class="absolute top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded-lg">
+                        ₹<span th:text="${artwork.price}"></span>
+                    </div>
+                    <div th:if="${artwork.sold}" class="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-lg">
+                        SOLD
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 th:text="${artwork.title}" class="text-xl font-semibold mb-2"></h3>
+                    <p th:text="${artwork.description}" class="text-gray-600 mb-4"></p>
+                    
+                    <div class="flex justify-between items-center space-x-2">
+                        <form th:action="@{/library/toggle-sold}" method="post" class="inline flex-1">
+                            <input type="hidden" name="artworkId" th:value="${artwork.id}" />
+                            <button type="submit" 
+                                    th:class="${artwork.sold ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'} + ' w-full text-white px-4 py-2 rounded transition'">
+                                <span th:text="${artwork.sold ? 'Mark as Available' : 'Mark as Sold'}"></span>
+                            </button>
+                        </form>
+                        <form th:action="@{/library/delete}" method="post" class="inline">
+                            <input type="hidden" name="artworkId" th:value="${artwork.id}" />
+                            <button type="submit" 
+                                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

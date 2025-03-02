@@ -9,5 +9,6 @@ import com.example.EPLS.model.Images;
 public interface ImagesRepository extends JpaRepository<Images,Long> {
 
 	List<Images> findByUploadedBy(String user);
+    List<Images> findByUploadedByNot(String uploadedBy);
 
 }

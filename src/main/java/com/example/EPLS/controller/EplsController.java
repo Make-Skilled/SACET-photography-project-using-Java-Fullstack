@@ -1,11 +1,5 @@
 package com.example.EPLS.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -16,18 +10,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.EPLS.model.Artwork;
 import com.example.EPLS.model.ChallengeRequests;
 import com.example.EPLS.model.Challenges;
+import com.example.EPLS.model.Comment;
 import com.example.EPLS.model.Images;
 import com.example.EPLS.model.Users;
+import com.example.EPLS.repository.ArtworkRepository;
 import com.example.EPLS.repository.ChallengeRequestsRepository;
 import com.example.EPLS.repository.ChallengesRepository;
 import com.example.EPLS.repository.ImagesRepository;
 import com.example.EPLS.repository.UserRepository;
+import com.example.EPLS.repository.CommentRepository;
 import com.example.EPLS.service.ChallengeService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class EplsController {
@@ -53,9 +64,17 @@ public class EplsController {
 	@Autowired
 	private ChallengeRequestsRepository challengeRequestRepository;
 
+	@Autowired
+	private ArtworkRepository artworkRepository;
+
+	@Autowired
+	private CommentRepository commentRepository;
+
 	@GetMapping("/")
-	public String index() {
-		return "index"; // Serves index.html
+	public String index(Model model) {
+		List<Artwork> featuredArtworks = artworkRepository.findTop3ByIsSoldFalseOrderByIdDesc();
+		model.addAttribute("featuredArtworks", featuredArtworks);
+		return "index";
 	}
 
 	@GetMapping("/admindashboard")
@@ -75,7 +94,24 @@ public class EplsController {
 	}
 
 	@GetMapping("/dashboard")
-	public String dashboard() {
+	public String dashboard(Model model, HttpSession session) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		// Get user's photos count
+		List<Images> userPhotos = imagesRepository.findByUploadedBy(userEmail);
+		model.addAttribute("myPhotosCount", userPhotos.size());
+
+		// Get user's artworks count
+		List<Artwork> userArtworks = artworkRepository.findBySellerEmail(userEmail);
+		model.addAttribute("myArtworksCount", userArtworks.size());
+
+		// Get user's challenges count
+		List<ChallengeRequests> userChallenges = challengeRequestRepository.findByUserEmail(userEmail);
+		model.addAttribute("challengesCount", userChallenges.size());
+
 		return "dashboard"; // Serves dashboard.html
 	}
 
@@ -230,27 +266,159 @@ public class EplsController {
 	}
 
 	@GetMapping("/library")
-	public String gallery(HttpSession session, Model model) {
-		// Retrieve the user email from the session
-		String user = (String) session.getAttribute("userEmail");
-		System.out.print("user");
-
-		// Check if user is not logged in
-		if (user == null) {
-			return "redirect:/login"; // Redirect to login page if not logged in
+	public String library(Model model, HttpSession session) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
 		}
 
-		// Fetch the images uploaded by the logged-in user from the repository
-		List<Images> gallery = imagesRepository.findByUploadedBy(user);
-
-		// Add the gallery images to the model
-		model.addAttribute("libraryItems", gallery);
-
-		// Return the gallery page view
-		return "library"; // This assumes you have a Thymeleaf template named gallery.html
+		List<Images> libraryItems = imagesRepository.findByUploadedBy(userEmail);
+		List<Artwork> artworks = artworkRepository.findBySellerEmail(userEmail);
+		model.addAttribute("libraryItems", libraryItems);
+		model.addAttribute("artworks", artworks);
+		return "library";
 	}
 
-	@PostMapping("/deleteLibraryItem/{id}")
+	@GetMapping("/library/marketplace")
+	public String marketplace(Model model) {
+		List<Artwork> artworks = artworkRepository.findByIsSoldFalse();
+		model.addAttribute("artworks", artworks);
+		return "library";
+	}
+
+	@GetMapping("/library/sell")
+	public String sellArtworkForm() {
+		return "sell-artwork";
+	}
+
+	@PostMapping("/library/sell")
+	public String sellArtwork(@RequestParam("file") MultipartFile file,
+                            @RequestParam("title") String title,
+                            @RequestParam("description") String description,
+                            @RequestParam("price") BigDecimal price,
+                            HttpSession session,
+                            Model model) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		if (file.isEmpty()) {
+			model.addAttribute("error", "Please select an image to upload.");
+			return "sell-artwork";
+		}
+
+		try {
+			// Create upload directory if it doesn't exist
+			File dir = new File(uploadDir);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			// Generate unique filename
+			String originalFilename = file.getOriginalFilename();
+			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+			String filename = UUID.randomUUID().toString() + extension;
+
+			// Save file
+			File dest = new File(dir.getAbsolutePath() + File.separator + filename);
+			file.transferTo(dest);
+
+			// Create artwork
+			Artwork artwork = new Artwork();
+			artwork.setTitle(title);
+			artwork.setDescription(description);
+			artwork.setImagePath(filename);
+			artwork.setPrice(price);
+			artwork.setSellerEmail(userEmail);
+			artwork.setSold(false);
+
+			artworkRepository.save(artwork);
+
+			return "redirect:/library/marketplace";
+		} catch (IOException e) {
+			model.addAttribute("error", "Failed to upload image. Please try again.");
+			return "sell-artwork";
+		}
+	}
+
+	@PostMapping("/library/buy")
+	public String buyArtwork(@RequestParam Long artworkId, HttpSession session, RedirectAttributes redirectAttributes) {
+		String buyerEmail = (String) session.getAttribute("userEmail");
+		if (buyerEmail == null) {
+			return "redirect:/login";
+		}
+
+		Optional<Artwork> artworkOpt = artworkRepository.findById(artworkId);
+		if (artworkOpt.isEmpty()) {
+			redirectAttributes.addFlashAttribute("error", "Artwork not found");
+			return "redirect:/library/marketplace";
+		}
+
+		Artwork artwork = artworkOpt.get();
+		if (artwork.getSellerEmail().equals(buyerEmail)) {
+			redirectAttributes.addFlashAttribute("error", "You cannot buy your own artwork");
+			return "redirect:/library/marketplace";
+		}
+
+		if (artwork.isSold()) {
+			redirectAttributes.addFlashAttribute("error", "This artwork has already been sold");
+			return "redirect:/library/marketplace";
+		}
+
+		// Update artwork status
+		artwork.setSold(true);
+		artwork.setBuyerEmail(buyerEmail);
+		artworkRepository.save(artwork);
+
+		redirectAttributes.addFlashAttribute("success", "Purchase successful! The artwork is now yours.");
+		return "redirect:/library/marketplace";
+	}
+
+	@GetMapping("/gallery")
+	public String gallery(HttpSession session, Model model) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		// Get all photos except user's own
+		List<Images> photos = imagesRepository.findByUploadedByNot(userEmail);
+		
+		// Get comments for each photo
+		Map<Long, List<Comment>> photoComments = new HashMap<>();
+		for (Images photo : photos) {
+			List<Comment> comments = commentRepository.findByPhotoIdOrderByCreatedAtDesc(photo.getId());
+			photoComments.put(photo.getId(), comments);
+		}
+
+		model.addAttribute("photos", photos);
+		model.addAttribute("photoComments", photoComments);
+		return "gallery";
+	}
+
+	@PostMapping("/gallery/comment")
+	public String addComment(@RequestParam Long photoId, 
+                           @RequestParam String content,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		Comment comment = new Comment();
+		comment.setPhotoId(photoId);
+		comment.setUserEmail(userEmail);
+		comment.setContent(content);
+		
+		commentRepository.save(comment);
+		
+		redirectAttributes.addFlashAttribute("success", "Comment added successfully");
+		return "redirect:/gallery";
+	}
+
+	@GetMapping("/deleteLibraryItem/{id}")
 	public String deleteLibraryItem(@PathVariable("id") Long id) {
 		try {
 			// Check if the item exists
@@ -607,4 +775,82 @@ public class EplsController {
 	    }
 	}
 
+	@GetMapping("/library/my-artworks")
+	public String myArtworks(HttpSession session, Model model) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+		
+		List<Artwork> artworks = artworkRepository.findBySellerEmail(userEmail);
+		model.addAttribute("artworks", artworks);
+		return "my-artworks";
+	}
+
+	@PostMapping("/library/toggle-sold")
+	public String toggleSoldStatus(@RequestParam Long artworkId, HttpSession session, RedirectAttributes redirectAttributes) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		Optional<Artwork> artworkOpt = artworkRepository.findById(artworkId);
+		if (artworkOpt.isEmpty()) {
+			redirectAttributes.addFlashAttribute("error", "Artwork not found");
+			return "redirect:/library/my-artworks";
+		}
+
+		Artwork artwork = artworkOpt.get();
+		if (!artwork.getSellerEmail().equals(userEmail)) {
+			redirectAttributes.addFlashAttribute("error", "You can only update your own artworks");
+			return "redirect:/library/my-artworks";
+		}
+
+		artwork.setSold(!artwork.isSold());
+		artworkRepository.save(artwork);
+
+		String status = artwork.isSold() ? "sold" : "available";
+		redirectAttributes.addFlashAttribute("success", "Artwork marked as " + status);
+		return "redirect:/library/my-artworks";
+	}
+
+	@PostMapping("/library/delete-artwork")
+	public String deleteArtwork(@RequestParam Long artworkId, 
+	                          HttpSession session, 
+	                          RedirectAttributes redirectAttributes,
+	                          HttpServletRequest request) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
+		Optional<Artwork> artworkOpt = artworkRepository.findById(artworkId);
+		if (artworkOpt.isEmpty()) {
+			redirectAttributes.addFlashAttribute("error", "Artwork not found");
+			return "redirect:/library/marketplace";
+		}
+
+		Artwork artwork = artworkOpt.get();
+		if (!artwork.getSellerEmail().equals(userEmail)) {
+			redirectAttributes.addFlashAttribute("error", "You can only delete your own artworks");
+			return "redirect:/library/marketplace";
+		}
+
+		// Delete the image file
+		String imagePath = uploadDir + File.separator + artwork.getImagePath();
+		try {
+			Files.deleteIfExists(Paths.get(imagePath));
+		} catch (IOException e) {
+			// Log the error but continue with database deletion
+			e.printStackTrace();
+		}
+
+		artworkRepository.delete(artwork);
+		redirectAttributes.addFlashAttribute("success", "Artwork deleted successfully");
+		
+		// Return to the page that initiated the delete
+		String referer = request.getHeader("Referer");
+		return referer != null && referer.contains("/my-artworks") ? 
+               "redirect:/library/my-artworks" : "redirect:/library/marketplace";
+	}
 }
