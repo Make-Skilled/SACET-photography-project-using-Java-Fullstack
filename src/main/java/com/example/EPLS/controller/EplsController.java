@@ -1,5 +1,16 @@
 package com.example.EPLS.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,24 +32,14 @@ import com.example.EPLS.model.Users;
 import com.example.EPLS.repository.ArtworkRepository;
 import com.example.EPLS.repository.ChallengeRequestsRepository;
 import com.example.EPLS.repository.ChallengesRepository;
+import com.example.EPLS.repository.CommentRepository;
 import com.example.EPLS.repository.ImagesRepository;
 import com.example.EPLS.repository.UserRepository;
-import com.example.EPLS.repository.CommentRepository;
 import com.example.EPLS.service.ChallengeService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class EplsController {
@@ -266,16 +267,25 @@ public class EplsController {
 	}
 
 	@GetMapping("/library")
-	public String library(Model model, HttpSession session) {
+	public String library(Model model, HttpSession session, HttpServletResponse response) {
 		String userEmail = (String) session.getAttribute("userEmail");
 		if (userEmail == null) {
 			return "redirect:/login";
 		}
 
+		// Add cache control headers to prevent caching
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "0");
+
+		// Fetch fresh data from repositories
 		List<Images> libraryItems = imagesRepository.findByUploadedBy(userEmail);
 		List<Artwork> artworks = artworkRepository.findBySellerEmail(userEmail);
+		
+		// Add data to model
 		model.addAttribute("libraryItems", libraryItems);
 		model.addAttribute("artworks", artworks);
+		
 		return "library";
 	}
 
@@ -418,25 +428,43 @@ public class EplsController {
 		return "redirect:/gallery";
 	}
 
-	@GetMapping("/deleteLibraryItem/{id}")
-	public String deleteLibraryItem(@PathVariable("id") Long id) {
+	@PostMapping("/deleteLibraryItem/{id}")
+	public String deleteLibraryItem(@PathVariable("id") Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+		String userEmail = (String) session.getAttribute("userEmail");
+		if (userEmail == null) {
+			return "redirect:/login";
+		}
+
 		try {
-			// Check if the item exists
-			if (imagesRepository.existsById(id)) {
-				// Delete the item from the database using the repository
-				imagesRepository.deleteById(id);
-			} else {
-				// If the item does not exist, handle accordingly (optional, you can redirect or
-				// show an error)
-				return "redirect:/library?error=ItemNotFound";
+			Optional<Images> imageOpt = imagesRepository.findById(id);
+			if (imageOpt.isEmpty()) {
+				redirectAttributes.addFlashAttribute("error", "Item not found");
+				return "redirect:/library";
 			}
 
-			// Redirect to the library page after deletion
+			Images image = imageOpt.get();
+			// Verify the user owns this image
+			if (!image.getUploadedBy().equals(userEmail)) {
+				redirectAttributes.addFlashAttribute("error", "You can only delete your own items");
+				return "redirect:/library";
+			}
+
+			// Delete the image file from the filesystem
+			String imagePath = uploadDir + File.separator + image.getImagePath();
+			try {
+				Files.deleteIfExists(Paths.get(imagePath));
+			} catch (IOException e) {
+				// Log the error but continue with database deletion
+				e.printStackTrace();
+			}
+
+			imagesRepository.deleteById(id);
+			redirectAttributes.addFlashAttribute("success", "Item deleted successfully");
 			return "redirect:/library";
 		} catch (Exception e) {
 			e.printStackTrace();
-			// Redirect to the library page with an error message if something goes wrong
-			return "redirect:/library?error=true";
+			redirectAttributes.addFlashAttribute("error", "An error occurred while deleting the item");
+			return "redirect:/library";
 		}
 	}
 
@@ -827,13 +855,13 @@ public class EplsController {
 		Optional<Artwork> artworkOpt = artworkRepository.findById(artworkId);
 		if (artworkOpt.isEmpty()) {
 			redirectAttributes.addFlashAttribute("error", "Artwork not found");
-			return "redirect:/library/marketplace";
+			return "redirect:/library";
 		}
 
 		Artwork artwork = artworkOpt.get();
 		if (!artwork.getSellerEmail().equals(userEmail)) {
 			redirectAttributes.addFlashAttribute("error", "You can only delete your own artworks");
-			return "redirect:/library/marketplace";
+			return "redirect:/library";
 		}
 
 		// Delete the image file
